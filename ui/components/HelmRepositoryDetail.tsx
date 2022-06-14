@@ -30,19 +30,30 @@ function HelmRepositoryDetail({
       // Guard against an undefined repo with a default empty object
       info={(hr: HelmRepository = {}) => [
         ["Type", removeKind(FluxObjectKind.KindHelmRepository)],
+        ["Repository Type", hr.repositoryType.toLowerCase()],
+        ["URL", tryLink(hr.url)],
         [
-          "URL",
-          <Link newTab href={hr.url}>
-            {hr.url}
-          </Link>,
+          "Last Updated",
+          hr.lastUpdatedAt ? <Timestamp time={hr.lastUpdatedAt} /> : "-",
         ],
-        ["Last Updated", <Timestamp time={hr.lastUpdatedAt} />],
         ["Interval", <Interval interval={hr.interval} />],
         ["Cluster", hr.clusterName],
         ["Namespace", hr.namespace],
       ]}
     />
   );
+}
+
+function tryLink(url: string) {
+  if (url.startsWith("oci://")) {
+    return url;
+  } else {
+    return (
+      <Link newTab href={url}>
+        {url}
+      </Link>
+    );
+  }
 }
 
 export default styled(HelmRepositoryDetail).attrs({

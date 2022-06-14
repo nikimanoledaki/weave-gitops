@@ -108,8 +108,10 @@ function SourcesTable({ className, sources }: Props) {
                 return "-";
               case FluxObjectKind.KindHelmRepository:
                 text = (s as HelmRepository).url;
-                url = text;
-                link = true;
+                if ((s as HelmRepository).repositoryType != "OCI") {
+                  url = text;
+                  link = true;
+                }
                 break;
             }
             return link ? (
@@ -141,9 +143,8 @@ function SourcesTable({ className, sources }: Props) {
         },
         {
           label: "Last Updated",
-          value: (s: Source) => (
-            <Timestamp time={(s as GitRepository).lastUpdatedAt} />
-          ),
+          value: (s: Source) =>
+            s.lastUpdatedAt ? <Timestamp time={s.lastUpdatedAt} /> : "-",
         },
       ]}
     />
